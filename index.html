@@ -460,7 +460,7 @@
           if (days <= 0) return 0;
         
           return days * prices[car];
-        }
+        };
         function doPost(e) {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   const data = JSON.parse(e.postData.contents);
