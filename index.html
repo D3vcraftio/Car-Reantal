@@ -462,96 +462,76 @@
           return days * prices[car];
         }
         function doPost(e) {
-              const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-              const data = JSON.parse(e.postData.contents);
-            
-              const rows = sheet.getDataRange().getValues();
-            
-              for (let i = 1; i < rows.length; i++) {
-                const existingCar = rows[i][2];
-                const existingStart = new Date(rows[i][0]);
-                const existingEnd = new Date(rows[i][1]);
-            
-                const newStart = new Date(data.pickupDate);
-                const newEnd = new Date(data.returnDate);
-            
-                if (
-                  existingCar === data.carType &&
-                  newStart <= existingEnd &&
-                  newEnd >= existingStart
-                ) {
-                  return ContentService
-                    .createTextOutput(JSON.stringify({ result: "unavailable" }))
-                    .setMimeType(ContentService.MimeType.JSON);
-                }
-              }
-            
-              sheet.appendRow([
-                data.pickupDate,
-                data.returnDate,
-                data.carType,
-                data.pickupLocation,
-                data.customerName,
-                data.customerPhone,
-                data.price
-              ]);
-            
-              return ContentService
-                .createTextOutput(JSON.stringify({ result: "success" }))
-                .setMimeType(ContentService.MimeType.JSON);
-            }
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const data = JSON.parse(e.postData.contents);
 
-            const scriptURL = "https://script.google.com/macros/s/AKfycbw_6WHfwBIoUrgK0zoIFEaIn3ZYsIAVshvUXYIdvaymbGvVtmIiTD0yaMH52LCzIiU4nA/exec";
-            
-            document.getElementById("bookingForm").addEventListener("submit", async function(e) {
-              e.preventDefault();
-            
-              const price = calculatePrice();
-            
-              const data = {
-                pickupDate: pickupDate.value,
-                returnDate: returnDate.value,
-                carType: carType.value,
-                pickupLocation: pickupLocation.value,
-                customerName: customerName.value,
-                customerPhone: customerPhone.value,
-                price: price
-              };
-            
-              const response = await fetch(scriptURL, {
-                method: "POST",
-                body: JSON.stringify(data)
-              });
-            
-              const result = await response.json();
-            
-              if (result.result === "success") {
-                document.getElementById("bookingSuccess").style.display = "block";
-              } else {
-                alert("❌ Car not available for selected dates");
-              }
-            });
-            async function checkAvailability() {
-              const data = {
-                pickupDate: pickupDate.value,
-                returnDate: returnDate.value,
-                carType: carType.value
-              };
-            
-              const response = await fetch(scriptURL, {
-                method: "POST",
-                body: JSON.stringify({ ...data, checkOnly: true })
-              });
-            
-              const result = await response.json();
-            
-              if (result.result === "unavailable") {
-                alert("❌ This car is already booked for these dates");
-                return false;
-              }
-            
-              return true;
-            }
+  const rows = sheet.getDataRange().getValues();
+
+  for (let i = 1; i < rows.length; i++) {
+    const existingCar = rows[i][2];
+    const existingStart = new Date(rows[i][0]);
+    const existingEnd = new Date(rows[i][1]);
+
+    const newStart = new Date(data.pickupDate);
+    const newEnd = new Date(data.returnDate);
+
+    if (
+      existingCar === data.carType &&
+      newStart <= existingEnd &&
+      newEnd >= existingStart
+    ) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ result: "unavailable" }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+  sheet.appendRow([
+    data.pickupDate,
+    data.returnDate,
+    data.carType,
+    data.pickupLocation,
+    data.customerName,
+    data.customerPhone,
+    data.price
+  ]);
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ result: "success" }))
+    .setMimeType(ContentService.MimeType.JSON);
+}   
+
+        const scriptURL = "PASTE_YOUR_GOOGLE_SCRIPT_URL";
+
+document.getElementById("bookingForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const price = calculatePrice();
+
+  const data = {
+    pickupDate: pickupDate.value,
+    returnDate: returnDate.value,
+    carType: carType.value,
+    pickupLocation: pickupLocation.value,
+    customerName: customerName.value,
+    customerPhone: customerPhone.value,
+    price: price
+  };
+
+  const response = await fetch(scriptURL, {
+    method: "POST",
+    body: JSON.stringify(data)
+  });
+
+  const result = await response.json();
+
+  if (result.result === "success") {
+    document.getElementById("bookingSuccess").style.display = "block";
+  } else {
+    alert("❌ Car not available for selected dates");
+  }
+});
+        
         // ========== CAR DATA ==========
         const carsData = [
             {
