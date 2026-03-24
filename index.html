@@ -128,6 +128,7 @@
                         ✓ Booking request sent successfully! We'll contact you soon.
                     </div>
                 </form>
+                <p id="priceDisplay" style="font-weight:bold;"></p>
             </div>
         </div>
     </section>
@@ -694,6 +695,22 @@
         document.addEventListener('DOMContentLoaded', function() {
             renderCars();
         });
+
+        const priceDisplay = document.getElementById("priceDisplay");
+
+document.querySelectorAll("#pickupDate, #returnDate, #carType")
+  .forEach(input => {
+    input.addEventListener("change", () => {
+      const pickup = pickupDate.value;
+      const returnD = returnDate.value;
+      const car = carType.value;
+
+      if (pickup && returnD && car) {
+        const price = calculatePrice(pickup, returnD, car);
+        priceDisplay.textContent = "Total Price: $" + price;
+      }
+    });
+  });
     </script>
 </body>
 </html>
