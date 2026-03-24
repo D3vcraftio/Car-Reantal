@@ -441,6 +441,60 @@
     </footer>
 
     <script>
+    const form = document.getElementById("bookingForm");
+    
+    const prices = {
+        economy: 25,
+        luxury: 85,
+        suv: 95,
+        sports: 180,
+        van: 110,
+    };
+    
+    function calculateDays(start, end) {
+        const pickup = new Date(start);
+        const dropoff = new Date(end);
+        const diffTime = dropoff - pickup;
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    }
+    
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+    
+        const pickupDate = document.getElementById("pickupDate").value;
+        const returnDate = document.getElementById("returnDate").value;
+        const carType = document.getElementById("carType").value;
+    
+        const days = calculateDays(pickupDate, returnDate);
+        const pricePerDay = prices[carType] || 0;
+        const totalPrice = days * pricePerDay;
+    
+        const data = {
+            pickupDate,
+            returnDate,
+            carType,
+            pickupLocation: document.getElementById("pickupLocation").value,
+            customerName: document.getElementById("customerName").value,
+            customerPhone: document.getElementById("customerPhone").value,
+            days,
+            totalPrice
+        };
+    
+        fetch("https://script.google.com/macros/s/AKfycbwN9RPQiOp_MVURYSBjYSehJJuevdD5bwReMTrdSHzaGJfi1Q_oeGaj7WVm3YTJGVl_/exec", {
+            method: "POST",
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(response => {
+            alert(`Total Price: ${totalPrice} MAD for ${days} days 💰`);
+            document.getElementById("bookingSuccess").style.display = "block";
+            form.reset();
+        })
+        .catch(error => console.error("Error:", error));
+    });
+
+
+        
         // ========== CAR DATA ==========
         const carsData = [
             {
