@@ -441,58 +441,65 @@
     </footer>
 
     <script>
-    const form = document.getElementById("bookingForm");
-    
-    const prices = {
-        economy: 25,
-        luxury: 85,
-        suv: 95,
-        sports: 180,
-        van: 110,
-    };
-    
-    function calculateDays(start, end) {
-        const pickup = new Date(start);
-        const dropoff = new Date(end);
-        const diffTime = dropoff - pickup;
-        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    }
-    
-    form.addEventListener("submit", function(e) {
-        e.preventDefault();
-    
-        const pickupDate = document.getElementById("pickupDate").value;
-        const returnDate = document.getElementById("returnDate").value;
-        const carType = document.getElementById("carType").value;
-    
-        const days = calculateDays(pickupDate, returnDate);
-        const pricePerDay = prices[carType] || 0;
-        const totalPrice = days * pricePerDay;
-    
-        const data = {
-            pickupDate,
-            returnDate,
-            carType,
-            pickupLocation: document.getElementById("pickupLocation").value,
-            customerName: document.getElementById("customerName").value,
-            customerPhone: document.getElementById("customerPhone").value,
-            days,
-            totalPrice
+        const prices = {
+          economy: 25,
+          luxury: 85,
+          suv: 95,
+          sports: 180,
+          van: 110
         };
-    
-        fetch("https://script.google.com/macros/s/AKfycbwN9RPQiOp_MVURYSBjYSehJJuevdD5bwReMTrdSHzaGJfi1Q_oeGaj7WVm3YTJGVl_/exec", {
-            method: "POST",
-            body: JSON.stringify(data)
-        })
-        .then(res => res.json())
-        .then(response => {
-            alert(`Total Price: ${totalPrice} MAD for ${days} days 💰`);
-            document.getElementById("bookingSuccess").style.display = "block";
-            form.reset();
-        })
-        .catch(error => console.error("Error:", error));
-    });
-
+        
+        function calculatePrice() {
+          const pickup = new Date(document.getElementById("pickupDate").value);
+          const ret = new Date(document.getElementById("returnDate").value);
+          const car = document.getElementById("carType").value;
+        
+          if (!pickup || !ret || !car) return 0;
+        
+          const days = Math.ceil((ret - pickup) / (1000 * 60 * 60 * 24));
+          if (days <= 0) return 0;
+        
+          return days * prices[car];
+        }
+        function doPost(e) {
+              const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+              const data = JSON.parse(e.postData.contents);
+            
+              const rows = sheet.getDataRange().getValues();
+            
+              for (let i = 1; i < rows.length; i++) {
+                const existingCar = rows[i][2];
+                const existingStart = new Date(rows[i][0]);
+                const existingEnd = new Date(rows[i][1]);
+            
+                const newStart = new Date(data.pickupDate);
+                const newEnd = new Date(data.returnDate);
+            
+                if (
+                  existingCar === data.carType &&
+                  newStart <= existingEnd &&
+                  newEnd >= existingStart
+                ) {
+                  return ContentService
+                    .createTextOutput(JSON.stringify({ result: "unavailable" }))
+                    .setMimeType(ContentService.MimeType.JSON);
+                }
+              }
+            
+              sheet.appendRow([
+                data.pickupDate,
+                data.returnDate,
+                data.carType,
+                data.pickupLocation,
+                data.customerName,
+                data.customerPhone,
+                data.price
+              ]);
+            
+              return ContentService
+                .createTextOutput(JSON.stringify({ result: "success" }))
+                .setMimeType(ContentService.MimeType.JSON);
+            }
 
         
         // ========== CAR DATA ==========
