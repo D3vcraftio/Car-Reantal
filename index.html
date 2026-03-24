@@ -501,7 +501,57 @@
                 .setMimeType(ContentService.MimeType.JSON);
             }
 
-        
+            const scriptURL = "https://script.google.com/macros/s/AKfycbw_6WHfwBIoUrgK0zoIFEaIn3ZYsIAVshvUXYIdvaymbGvVtmIiTD0yaMH52LCzIiU4nA/exec";
+            
+            document.getElementById("bookingForm").addEventListener("submit", async function(e) {
+              e.preventDefault();
+            
+              const price = calculatePrice();
+            
+              const data = {
+                pickupDate: pickupDate.value,
+                returnDate: returnDate.value,
+                carType: carType.value,
+                pickupLocation: pickupLocation.value,
+                customerName: customerName.value,
+                customerPhone: customerPhone.value,
+                price: price
+              };
+            
+              const response = await fetch(scriptURL, {
+                method: "POST",
+                body: JSON.stringify(data)
+              });
+            
+              const result = await response.json();
+            
+              if (result.result === "success") {
+                document.getElementById("bookingSuccess").style.display = "block";
+              } else {
+                alert("❌ Car not available for selected dates");
+              }
+            });
+            async function checkAvailability() {
+              const data = {
+                pickupDate: pickupDate.value,
+                returnDate: returnDate.value,
+                carType: carType.value
+              };
+            
+              const response = await fetch(scriptURL, {
+                method: "POST",
+                body: JSON.stringify({ ...data, checkOnly: true })
+              });
+            
+              const result = await response.json();
+            
+              if (result.result === "unavailable") {
+                alert("❌ This car is already booked for these dates");
+                return false;
+              }
+            
+              return true;
+            }
         // ========== CAR DATA ==========
         const carsData = [
             {
