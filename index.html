@@ -443,10 +443,10 @@
 
     <script>
         const form = document.getElementById("bookingForm");
-        
+
         // 💰 Prices
         const prices = {
-          economy: 30,
+        economy: 30,
           luxury: 80,
           suv: 60,
           sports: 120,
@@ -490,7 +490,7 @@
           };
         
           try {
-            const response = await fetch("https://script.google.com/macros/s/AKfycbxrJnFYGHJlPjuKJwieU1WY12NvBrLSsb9HwP_1M4MC1msg2-NiFauUFwmxlX0SQcOkiQ/exec", {
+            const response = await fetch("YOUR_GOOGLE_SCRIPT_URL", {
               method: "POST",
               body: JSON.stringify(data)
             });
@@ -527,7 +527,7 @@
                 id: 2,
                 name: 'BMW X5 SUV',
                 category: 'suv',
-                image: 'suv-car.jpg',
+                image: 'images/suv-car.jpg',
                 price: 95,
                 seats: 7,
                 transmission: 'Automatic',
@@ -539,7 +539,7 @@
                 id: 3,
                 name: 'peugeot 208',
                 category: 'economy',
-                image: 'economy-car.jpg',
+                image: 'images/economy-car.jpg',
                 price: 25,
                 seats: 5,
                 transmission: 'Manual',
@@ -551,7 +551,7 @@
                 id: 4,
                 name: 'Porsche 911',
                 category: 'sports',
-                image: 'sport-car.jpg',
+                image: 'images/sport-car.jpg',
                 price: 180,
                 seats: 2,
                 transmission: 'Automatic',
@@ -563,7 +563,7 @@
                 id: 5,
                 name: 'Mercedes V-Class',
                 category: 'van',
-                image: 'van-car.jpg',
+                image: 'images/van-car.jpg',
                 price: 110,
                 seats: 8,
                 transmission: 'Automatic',
