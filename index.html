@@ -441,7 +441,7 @@
         </div>
     </footer>
      <script>
-const form = document.getElementById("bookingForm");
+         const form = document.getElementById("bookingForm");
 
 // 💰 Prices per day
 const prices = {
@@ -485,7 +485,7 @@ form.addEventListener("submit", function(e) {
     price
   };
 
-  fetch("YOUR_GOOGLE_SCRIPT_URL", {
+  fetch("https://script.google.com/macros/s/AKfycbzlB9MLXWxv6mpgMAllRlKlb9Atx_l6eBLoVUJLbxpeM94Rsgq1MKby6TGE_4B7VHXsmQ/exec", {
     method: "POST",
     body: JSON.stringify(data),
   })
@@ -498,8 +498,6 @@ form.addEventListener("submit", function(e) {
     console.error("Error!", error);
   });
 });
-</script>
-     <script>
          
         // ========== CAR DATA ==========
         const carsData = [
