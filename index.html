@@ -440,78 +440,67 @@
             </div>
         </div>
     </footer>
+     <script>
+const form = document.getElementById("bookingForm");
 
-    <script>
-                    
-        const form = document.getElementById("bookingForm");
-        
-        // 💰 Prices per day
-        const prices = {
-          economy: 25,
-          luxury: 80,
-          suv: 60,
-          sports: 120,
-          van: 50
-        };
-        
-        // 💰 Calculate price
-        function calculatePrice(pickup, returnDate, carType) {
-          const start = new Date(pickup);
-          const end = new Date(returnDate);
-        
-          const diffTime = end - start;
-          const days = diffTime / (1000 * 60 * 60 * 24);
-        
-          if (days <= 0) return 0;
-        
-          return days * prices[carType];
-        }
-        
-        // 🚀 Submit form
-        form.addEventListener("submit", function(e) {
-          e.preventDefault();
-        
-          const pickupDate = document.getElementById("pickupDate").value;
-          const returnDate = document.getElementById("returnDate").value;
-          const carType = document.getElementById("carType").value;
-        
-          const price = calculatePrice(pickupDate, returnDate, carType);
-        
-          const data = {
-            pickupDate,
-            returnDate,
-            carType,
-            pickupLocation: document.getElementById("pickupLocation").value,
-            customerName: document.getElementById("customerName").value,
-            customerPhone: document.getElementById("customerPhone").value,
-            price
-          };
-        
-          fetch("https://script.google.com/macros/s/AKfycbw9DpPrXto69NZCvauTG5FZ8zkwaw6YX_oG3ZmGxeyN0ZPIA3V93wW3rR1aVVBWKbdiEQ/exec", {
-            method: "POST",
-            body: JSON.stringify(data),
-          })
-          .then(res => res.json())
-          .then(response => {
-            document.getElementById("bookingSuccess").style.display = "block";
-            form.reset();
-          })
-          .catch(error => {
-            console.error("Error!", error);
-          });
-        });
+// 💰 Prices per day
+const prices = {
+  economy: 30,
+  luxury: 80,
+  suv: 60,
+  sports: 120,
+  van: 50
+};
 
+// 💰 Calculate price
+function calculatePrice(pickup, returnDate, carType) {
+  const start = new Date(pickup);
+  const end = new Date(returnDate);
 
+  const diffTime = end - start;
+  const days = diffTime / (1000 * 60 * 60 * 24);
 
+  if (days <= 0) return 0;
 
+  return days * prices[carType];
+}
 
+// 🚀 Submit form
+form.addEventListener("submit", function(e) {
+  e.preventDefault();
 
+  const pickupDate = document.getElementById("pickupDate").value;
+  const returnDate = document.getElementById("returnDate").value;
+  const carType = document.getElementById("carType").value;
 
+  const price = calculatePrice(pickupDate, returnDate, carType);
 
+  const data = {
+    pickupDate,
+    returnDate,
+    carType,
+    pickupLocation: document.getElementById("pickupLocation").value,
+    customerName: document.getElementById("customerName").value,
+    customerPhone: document.getElementById("customerPhone").value,
+    price
+  };
 
-
-
-        
+  fetch("YOUR_GOOGLE_SCRIPT_URL", {
+    method: "POST",
+    body: JSON.stringify(data),
+  })
+  .then(res => res.json())
+  .then(response => {
+    document.getElementById("bookingSuccess").style.display = "block";
+    form.reset();
+  })
+  .catch(error => {
+    console.error("Error!", error);
+  });
+});
+</script>
+     <script>
+         
         // ========== CAR DATA ==========
         const carsData = [
             {
@@ -699,5 +688,5 @@
             renderCars();
         });
     </script>
-</body>
+    </body>
 </html>
